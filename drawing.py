@@ -1,5 +1,37 @@
 import pygame
 
+class UI:
+    def __init__(self, screen):
+        self.screen = screen
+        self.font = pygame.font.SysFont(None, 32)
+
+        self.WHITE = (255, 255, 255)
+        self.BLACK = (0, 0, 0)
+        self.BUTTON_COLOR = (0, 128, 255)
+        self.BUTTON_HOVER_COLOR = (0, 255, 255)
+
+    def draw_button(self, text, x, y, width, height, color):
+        pygame.draw.rect(self.screen, color, (x, y, width, height))
+        label = self.font.render(text, True, self.BLACK)
+        self.screen.blit(label, (x + (width - label.get_width()) // 2, y + (height - label.get_height()) // 2))
+
+    # Check if mouse is over a button
+    def button_hover(self, x, y, width, height):
+        mouse_x, mouse_y = pygame.mouse.get_pos()
+        return x <= mouse_x <= x + width and y <= mouse_y <= y + height
+
+    def draw_main(self):
+        self.screen.fill(self.WHITE)
+
+        start_color = self.BUTTON_HOVER_COLOR if self.button_hover(300, 200, 200, 50) else self.BUTTON_COLOR
+        options_color = self.BUTTON_HOVER_COLOR if self.button_hover(300, 300, 200, 50) else self.BUTTON_COLOR
+        quit_color = self.BUTTON_HOVER_COLOR if self.button_hover(300, 400, 200, 50) else self.BUTTON_COLOR
+
+        self.draw_button("Start Game", 300, 200, 200, 50, start_color)
+        self.draw_button("Options", 300, 300, 200, 50, options_color)
+        self.draw_button("Quit", 300, 400, 200, 50, quit_color)
+
+
 def draw_arrow(
         surface: pygame.Surface,
         start: pygame.Vector2,

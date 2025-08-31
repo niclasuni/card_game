@@ -2,7 +2,7 @@ import pygame
 import random
 import sys
 
-from drawing import draw_arrow
+from drawing import UI, draw_arrow
 from character import Character
 from deck import card_name_to_filename
 
@@ -39,36 +39,12 @@ pygame.display.set_caption("Card Draw Game")
 font = pygame.font.SysFont(None, 32)
 clock = pygame.time.Clock()
 
+ui = UI(screen)
 
 ### MAIN MENU
-
-WHITE = (255, 255, 255)
-BLACK = (0, 0, 0)
-BUTTON_COLOR = (0, 128, 255)
-BUTTON_HOVER_COLOR = (0, 255, 255)
-
-def draw_button(text, x, y, width, height, color):
-    pygame.draw.rect(screen, color, (x, y, width, height))
-    label = font.render(text, True, BLACK)
-    screen.blit(label, (x + (width - label.get_width()) // 2, y + (height - label.get_height()) // 2))
-
-# Check if mouse is over a button
-def button_hover(x, y, width, height):
-    mouse_x, mouse_y = pygame.mouse.get_pos()
-    return x <= mouse_x <= x + width and y <= mouse_y <= y + height
-
 running = True
 while running:
-    screen.fill(WHITE)
-
-    # Draw buttons
-    start_color = BUTTON_HOVER_COLOR if button_hover(300, 200, 200, 50) else BUTTON_COLOR
-    options_color = BUTTON_HOVER_COLOR if button_hover(300, 300, 200, 50) else BUTTON_COLOR
-    quit_color = BUTTON_HOVER_COLOR if button_hover(300, 400, 200, 50) else BUTTON_COLOR
-
-    draw_button("Start Game", 300, 200, 200, 50, start_color)
-    draw_button("Options", 300, 300, 200, 50, options_color)
-    draw_button("Quit", 300, 400, 200, 50, quit_color)
+    ui.draw_main()
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -76,14 +52,14 @@ while running:
 
         # Mouse click events
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-            if button_hover(300, 200, 200, 50):  # Start Game
+            if ui.button_hover(300, 200, 200, 50):  # Start Game
                 print("Start Game clicked")
                 running = False
                 # Call the function to start the game (you can transition here)
-            elif button_hover(300, 300, 200, 50):  # Options
+            elif ui.button_hover(300, 300, 200, 50):  # Options
                 print("Options clicked")
                 # You can create an options menu here
-            elif button_hover(300, 400, 200, 50):  # Quit
+            elif ui.button_hover(300, 400, 200, 50):  # Quit
                 running = False
 
     pygame.display.flip()
