@@ -56,17 +56,21 @@ while running:
                 print("Start Game clicked")
                 running = False
                 # Call the function to start the game (you can transition here)
-            elif ui.button_hover(300, 300, 200, 50):  # Options
+            elif ui.button_hover(300, 300, 200, 50):  # Deck
+                print("Deckbuilder clicked")
+            elif ui.button_hover(300, 400, 200, 50):  # Options
                 print("Options clicked")
                 # You can create an options menu here
-            elif ui.button_hover(300, 400, 200, 50):  # Quit
-                running = False
+            elif ui.button_hover(300, 500, 200, 50):  # Quit
+                pygame.quit()
+                sys.exit()
 
     pygame.display.flip()
 
 ### MAIN GAME
 player = Character()
 enemy = Character()
+player.deck.load_deck('test_deck.txt')
 enemy.mana = 0
 
 enemy_turn_step = None
@@ -149,7 +153,8 @@ while running:
         # --- Handle events
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                running = False
+                pygame.quit()
+                sys.exit()
 
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_e:

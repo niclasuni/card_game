@@ -55,12 +55,14 @@ class UI:
         self.screen.fill(self.WHITE)
 
         start_color = self.BUTTON_HOVER_COLOR if self.button_hover(300, 200, 200, 50) else self.BUTTON_COLOR
-        options_color = self.BUTTON_HOVER_COLOR if self.button_hover(300, 300, 200, 50) else self.BUTTON_COLOR
-        quit_color = self.BUTTON_HOVER_COLOR if self.button_hover(300, 400, 200, 50) else self.BUTTON_COLOR
+        deck_color = self.BUTTON_HOVER_COLOR if self.button_hover(300, 300, 200, 50) else self.BUTTON_COLOR
+        options_color = self.BUTTON_HOVER_COLOR if self.button_hover(300, 400, 200, 50) else self.BUTTON_COLOR
+        quit_color = self.BUTTON_HOVER_COLOR if self.button_hover(300, 500, 200, 50) else self.BUTTON_COLOR
 
         self.draw_button("Start Game", 300, 200, 200, 50, start_color)
-        self.draw_button("Options", 300, 300, 200, 50, options_color)
-        self.draw_button("Quit", 300, 400, 200, 50, quit_color)
+        self.draw_button("Load Deck", 300, 300, 200, 50, deck_color)
+        self.draw_button("Options", 300, 400, 200, 50, options_color)
+        self.draw_button("Quit", 300, 500, 200, 50, quit_color)
 
     def draw_game(self, player, enemy):
         screen = self.screen

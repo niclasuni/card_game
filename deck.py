@@ -5,11 +5,9 @@ from drawing import get_asset_path
 
 class Deck:
     def __init__(self):
-        suits = ["Hearts", "Diamonds", "Clubs", "Spades"]
-        ranks = ["2", "3", "4", "5", "6", "7", "8", "9", "10",
-                 "Jack", "Queen", "King", "Ace"]
-        self.cards = [f"{rank} of {suit}" for suit in suits for rank in ranks]
-        self.possible_cards = self.load_asset_names()
+        self.cards = []
+        self.create_new_deck()
+        self.asset_names = self.load_asset_names()
         self.images = {}
         self.load_card_images()
         self.shuffle()
@@ -29,7 +27,7 @@ class Deck:
 
     def load_card_images(self, path="card_images/PNG/Cards (medium)"):
         self.images = {}
-        for filename in self.possible_cards:
+        for filename in self.asset_names:
             if filename.endswith(".png"):
                 key = filename.replace(".png", "")
                 asset_path = get_asset_path(os.path.join(path, filename))
@@ -49,6 +47,17 @@ class Deck:
         pygame.surfarray.pixels_alpha(inverted)[:, :] = alpha  # restore alpha
 
         self.images[card_key] = inverted
+
+    def create_new_deck(self):
+        suits = ["Hearts", "Diamonds", "Clubs", "Spades"]
+        ranks = ["2", "3", "4", "5", "6", "7", "8", "9", "10",
+                 "Jack", "Queen", "King", "Ace"]
+        self.cards = [f"{rank} of {suit}" for suit in suits for rank in ranks]
+
+    def load_deck(self, deck_filename):
+        with open(deck_filename, 'r', encoding='utf-8') as file:
+            self.cards = [line.strip() for line in file]
+        self.shuffle()
 
     def load_asset_names(self):
         return [# 'card_back.png',
