@@ -65,27 +65,8 @@ while running:
     pygame.display.flip()
 
 ### MAIN GAME
-# Button setup
-button_rect = pygame.Rect(0, 0, 150, 50)  # will set to top-right later
-button_color = (70, 130, 180)
-button_hover = (100, 160, 210)
-
-reverse_button_rect = pygame.Rect(0, 0, 150, 50)  # size of the button
-reverse_button_color = (70, 130, 180)
-reverse_button_hover = (100, 160, 210)
-
-play_button_rect = pygame.Rect(0, 0, 150, 50)
-
-ui_poison = pygame.image.load("board_game_icons/PNG/Default (64px)/skull.png")
-ui_shield = pygame.image.load("board_game_icons/PNG/Default (64px)/shield.png")
-ui_poison = pygame.transform.scale(ui_poison, (20, 20))
-ui_shield = pygame.transform.scale(ui_shield, (20, 20))
-
-# Deck and drawn cards
-
 player = Character()
 enemy = Character()
-
 
 enemy_turn_step = None
 
@@ -99,62 +80,7 @@ running = True
 while running:
     screen.fill((34, 139, 34))  # green table background
 
-    lifebar_player = pygame.Rect(0, 0, 30, player.life)
-    lifebar_player.bottomleft = (20, 695)
-    lifebar_enemy = pygame.Rect(0, 0, 30, enemy.life)
-    lifebar_enemy.topleft = (20, 25)
-    screen.blit(ui_poison, (70, 695))
-    screen.blit(ui_shield, (120, 695))
-    screen.blit(ui_poison, (70, 2))
-    screen.blit(ui_shield, (120, 2))
-
-
-    pygame.draw.rect(screen, (255, 255, 255), lifebar_player, border_radius=10)
-    pygame.draw.rect(screen, (255, 255, 255), lifebar_enemy, border_radius=10)
-
-    value_text = font.render(str(player.life), True, (255, 255, 255))
-    text_rect = value_text.get_rect(center=(lifebar_player.centerx, lifebar_player.bottom + 12))
-    screen.blit(value_text, text_rect)
-    value_text = font.render(str(player.poison), True, (0, 0, 0))
-    text_rect = value_text.get_rect(center=(lifebar_player.right + 50, lifebar_player.bottom + 12))
-    screen.blit(value_text, text_rect)
-    value_text = font.render(str(player.shield), True, (0, 0, 0))
-    text_rect = value_text.get_rect(center=(lifebar_player.right + 100, lifebar_player.bottom + 12))
-    screen.blit(value_text, text_rect)
-
-    value_text = font.render(str(enemy.life), True, (255, 255, 255))
-    text_rect = value_text.get_rect(center=(lifebar_enemy.centerx, lifebar_enemy.top - 12))
-    screen.blit(value_text, text_rect)
-    value_text = font.render(str(enemy.poison), True, (0, 0, 0))
-    text_rect = value_text.get_rect(center=(lifebar_enemy.right + 50, lifebar_enemy.top - 12))
-    screen.blit(value_text, text_rect)
-    value_text = font.render(str(enemy.shield), True, (0, 0, 0))
-    text_rect = value_text.get_rect(center=(lifebar_enemy.right + 100, lifebar_enemy.top - 12))
-    screen.blit(value_text, text_rect)
-
-    # --- Draw button at top-right
-    button_rect.topright = (WIDTH - 20, HEIGHT - 70)
-    mouse_pos = pygame.mouse.get_pos()
-    color = button_hover if button_rect.collidepoint(mouse_pos) else button_color
-    pygame.draw.rect(screen, color, button_rect, border_radius=10)
-
-    text = font.render("Draw Card", True, (255, 255, 255))
-    text_rect = text.get_rect(center=button_rect.center)
-    screen.blit(text, text_rect)
-
-    reverse_button_rect.topright = (WIDTH - 20, HEIGHT - 140)
-    color = button_hover if reverse_button_rect.collidepoint(mouse_pos) else button_color
-    pygame.draw.rect(screen, color, reverse_button_rect, border_radius=10)
-    text = font.render("Reverse", True, (255, 255, 255))
-    text_rect = text.get_rect(center=reverse_button_rect.center)
-    screen.blit(text, text_rect)
-
-    play_button_rect.topright = (WIDTH - 200, HEIGHT - 140)
-    color = button_hover if play_button_rect.collidepoint(mouse_pos) else button_color
-    pygame.draw.rect(screen, color, play_button_rect, border_radius=10)
-    text = font.render("Play", True, (255, 255, 255))
-    text_rect = text.get_rect(center=play_button_rect.center)
-    screen.blit(text, text_rect)
+    ui.draw_game(player, enemy)
 
     center = pygame.Vector2(WIDTH / 2 - 350, 95 if not player_turn else 630)
     end = pygame.Vector2(WIDTH / 2 - 300, 95 if not player_turn else 630)
@@ -229,8 +155,9 @@ while running:
                     player.deck.put_back('Jack of Spades')
 
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                if button_rect.collidepoint(event.pos):
+                if ui.button_rect.collidepoint(event.pos):
                     # Draw a new card
+                    player.mana -= 1
                     new_cards = player.deck.draw(1)
                     player.drawn_cards.extend(new_cards)
                     if len(player.drawn_cards) >= 6:
@@ -240,38 +167,36 @@ while running:
                         selected_card = None
                         selected = None
 
-                elif reverse_button_rect.collidepoint(event.pos):
+                elif ui.reverse_button_rect.collidepoint(event.pos):
                     # Reverse colors of selected card
                     if player.selected_card:
                         card_key = card_name_to_filename(player.selected_card)
                         if card_key in player.deck.images:
                             player.deck.invert_card_colors(card_key)
 
-                elif play_button_rect.collidepoint(event.pos):
+                elif ui.play_button_rect.collidepoint(event.pos):
                     # Play the selected card
+                    played_card = player.selected_card
                     if player.selected_card in player.drawn_cards:
-                        played_card = player.selected_card
-
-                        if player.selected_card in player.drawn_cards:
-                            player.calc_damage(played_card, enemy)
-                            player.drawn_cards.remove(player.selected_card)
-                            player.selected_card = None  # deselect immediately
-                            selected = None
-                            player_turn = not player_turn
-
-                    enemy_card = enemy.deck.draw(1)
-                    enemy.drawn_cards.extend(enemy_card)
-                    enemy_turn_step = 1
-                    if enemy_turn_step:
-                        enemy_card = enemy_card[0]  # get the card name
-                        enemy.enemy_card_start_time = pygame.time.get_ticks()
+                        player.calc_damage(played_card, enemy)
+                        player.drawn_cards.remove(player.selected_card)
+                        player.selected_card = None  # deselect immediately
+                        selected = None
 
                 else:
                     # Check if a card box was clicked
                     selected = select_card(event.pos, player.drawn_cards[-5:], start_x, y_pos)
                     if selected and selected in player.drawn_cards:
                         player.selected_card = selected
-                        print("You selected:", player.selected_card)
+
+            elif player.mana < 0:
+                player_turn = not player_turn
+                enemy_card = enemy.deck.draw(1)
+                enemy.drawn_cards.extend(enemy_card)
+                enemy_turn_step = 1
+                if enemy_turn_step:
+                    enemy_card = enemy_card[0]
+                    enemy.enemy_card_start_time = pygame.time.get_ticks()
 
     # Enemy turn
     else:
@@ -313,7 +238,17 @@ while running:
             else:
                 enemy_turn_step = 4
 
-        if enemy_turn_step == 4:
+        elif enemy_turn_step == 4:
+            if enemy.mana < 0:
+                enemy_turn_step = 5
+            else:
+                enemy_turn_step = 1
+
+        if enemy_turn_step == 5:
+            new_cards = player.deck.draw(1)
+            player.drawn_cards.extend(new_cards)
+            if len(player.drawn_cards) >= 6:
+                player.drawn_cards = player.drawn_cards[1:]
             player_turn = not player_turn
 
     pygame.display.flip()

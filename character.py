@@ -13,6 +13,8 @@ class Character:
         self.poison = 0
         self.shield = 0
 
+        self.mana = 1
+
         self.enemy_card_start_time = 0
         self.ENEMY_DISPLAY_TIME = 750
 
@@ -26,6 +28,8 @@ class Character:
             "Jack": 11, "Queen": 12, "King": 13, "Ace": 14
         }
         value = rank_map.get(rank_str, None)
+
+        self.mana -= value
         if suit == 'Clubs':
             enemy.poison += value
         elif suit == 'Spades':
@@ -39,3 +43,6 @@ class Character:
 
         enemy.shield -= 2 if enemy.shield > 0 else 0
         self.poison -= 2 if self.poison > 0 else 0
+
+        if self.mana < 0:
+            enemy.mana = abs(self.mana)
