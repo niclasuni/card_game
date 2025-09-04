@@ -138,6 +138,13 @@ class UI:
         text_rect = value_text.get_rect(center=(x, y))
         self.screen.blit(value_text, text_rect)
 
+    def draw_win_screen(self):
+        win_text = self.font.render("YOU WIN!", True, self.WHITE)
+        sub_text = self.font.render("Press any key to exit...", True, self.WHITE)
+        self.screen.fill(self.BLACK)
+        self.screen.blit(win_text, (self.WIDTH // 2 - win_text.get_width() // 2, self.HEIGHT // 3))
+        self.screen.blit(sub_text, (self.WIDTH // 2 - sub_text.get_width() // 2, self.HEIGHT // 2))
+
 
 def draw_arrow(
         surface: pygame.Surface,

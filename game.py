@@ -67,6 +67,7 @@ while running:
 ### MAIN GAME
 player = Character()
 enemy = Character()
+enemy.mana = 0
 
 enemy_turn_step = None
 
@@ -251,8 +252,19 @@ while running:
                 player.drawn_cards = player.drawn_cards[1:]
             player_turn = not player_turn
 
+    if enemy.life <= 0:
+        break
     pygame.display.flip()
     clock.tick(30)
 
-pygame.quit()
-sys.exit()
+while True:
+    ui.draw_win_screen()
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            sys.exit()
+        elif event.type == pygame.KEYDOWN or event.type == pygame.MOUSEBUTTONDOWN:
+            pygame.quit()
+            sys.exit()
+
+    pygame.display.flip()
