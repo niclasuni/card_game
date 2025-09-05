@@ -5,8 +5,7 @@ from drawing import get_asset_path
 
 class Deck:
     def __init__(self):
-        self.cards = []
-        self.create_new_deck()
+        self.cards = self.create_new_deck()
         self.asset_names = self.load_asset_names()
         self.images = {}
         self.load_card_images()
@@ -52,7 +51,8 @@ class Deck:
         suits = ["Hearts", "Diamonds", "Clubs", "Spades"]
         ranks = ["2", "3", "4", "5", "6", "7", "8", "9", "10",
                  "Jack", "Queen", "King", "Ace"]
-        self.cards = [f"{rank} of {suit}" for suit in suits for rank in ranks]
+        return [f"{rank} of {suit}" for suit in suits for rank in ranks]
+
 
     def load_deck(self, deck_filename):
         with open(deck_filename, 'r', encoding='utf-8') as file:

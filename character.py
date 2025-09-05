@@ -9,7 +9,7 @@ class Character:
         self.hand = []
 
         self.selected_card = None
-        self.deckbuilder_selected_card_image = None
+        self.deckbuilder_selected_card_key = None
         self.life = 100
         self.poison = 0
         self.shield = 0

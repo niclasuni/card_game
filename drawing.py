@@ -118,17 +118,46 @@ class UI:
                 card_rect = pygame.Rect(x_pos, y_pos, CARD_WIDTH, CARD_HEIGHT)
 
                 if card_rect.collidepoint(mouse_pos):
-                    player.deckbuilder_selected_card_image = card_img
+                    player.deckbuilder_selected_card_key = card_key
 
-        if player.deckbuilder_selected_card_image:
+        if player.deckbuilder_selected_card_key:
             self.card_modifier(player)
 
     def card_modifier(self, player):
 
         enlarged_x_pos = self.screen.get_width() // 2 - 150 // 2  # Center horizontally
-        enlarged_y_pos = self.screen.get_height() - 150 - 20  # Position a little above the bottom
+        enlarged_y_pos = self.screen.get_height() - 250  # Position a little above the bottom
+        card_img = player.deck.images.get(player.deckbuilder_selected_card_key)
+        self.screen.blit(pygame.transform.scale(card_img, (150, 150)), (enlarged_x_pos, enlarged_y_pos))
 
-        self.screen.blit(pygame.transform.scale(player.deckbuilder_selected_card_image, (150, 150)), (enlarged_x_pos, enlarged_y_pos))
+        level_color = self.BUTTON_HOVER_COLOR if self.button_hover(enlarged_x_pos + 200, enlarged_y_pos, 200, 50) else self.BUTTON_COLOR
+        swap_color = self.BUTTON_HOVER_COLOR if self.button_hover(enlarged_x_pos + 200, enlarged_y_pos+50, 200, 50) else self.BUTTON_COLOR
+        reverse_color = self.BUTTON_HOVER_COLOR if self.button_hover(enlarged_x_pos + 200, enlarged_y_pos+100, 200, 50) else self.BUTTON_COLOR
+        save_color = self.BUTTON_HOVER_COLOR if self.button_hover(enlarged_x_pos + 200, enlarged_y_pos+150, 200, 50) else self.BUTTON_COLOR
+
+        self.draw_button("Level Up", enlarged_x_pos + 200, enlarged_y_pos, 200, 50, level_color)
+        self.draw_button("Swap", enlarged_x_pos + 200, enlarged_y_pos+50, 200, 50, swap_color)
+        self.draw_button("Reverse", enlarged_x_pos + 200, enlarged_y_pos+100, 200, 50, reverse_color)
+        self.draw_button("Save", enlarged_x_pos + 200, enlarged_y_pos+150, 200, 50, save_color)
+
+        for event in pygame.event.get():  # Left mouse click
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                # LEVEL UP
+                if self.button_hover(enlarged_x_pos + 200, enlarged_y_pos, 200, 50):
+                    print('LEVEL UP')
+                # SWAP
+                if self.button_hover(enlarged_x_pos + 200, enlarged_y_pos + 50, 200, 50):
+                    print('SWAP')
+                # REVERSE
+                if self.button_hover(enlarged_x_pos + 200, enlarged_y_pos + 100, 200, 50):
+                    # card_key = card_name_to_filename(player.deckbuilder_selected_card_image)
+                    if player.deckbuilder_selected_card_key in player.deck.images:
+                        player.deck.invert_card_colors(player.deckbuilder_selected_card_key)
+
+                # SAVE
+                if self.button_hover(enlarged_x_pos + 200, enlarged_y_pos + 150, 200, 50):
+                    player.deckbuilder_selected_card_key = None
+
 
     def draw_game(self, player, enemy):
         screen = self.screen

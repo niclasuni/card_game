@@ -64,7 +64,7 @@ while main_menu:
             elif ui.button_hover(150, 300, 200, 50):  # Deck
                 print("Deckbuilder clicked")
                 show_deck_builder = not show_deck_builder
-                player.deckbuilder_selected_card_image = None
+                player.deckbuilder_selected_card_key = None
             elif ui.button_hover(150, 400, 200, 50):  # Options
                 print("Options clicked")
                 # You can create an options menu here
@@ -76,7 +76,7 @@ while main_menu:
     ui.clock.tick(60)
 
 ### MAIN GAME
-player.deck.load_deck('test_deck.txt')
+# player.deck.load_deck('test_deck.txt')
 enemy.mana = 0
 
 enemy_turn_step = None
@@ -253,6 +253,9 @@ while running:
         elif enemy_turn_step == 4:
             if enemy.mana < 0:
                 enemy_turn_step = 5
+            elif len(enemy.drawn_cards) == 0:
+                    enemy.deck.draw(1)
+                    enemy.mana -= 1
             else:
                 enemy_turn_step = 1
 
