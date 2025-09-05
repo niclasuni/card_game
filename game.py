@@ -23,7 +23,7 @@ def select_card(mouse_pos, last_cards, start_x, y_pos, box_width=100, box_height
     for i in range(len(last_cards)):
         rect = pygame.Rect(start_x + i * (box_width + spacing), y_pos, box_width, box_height)
         if rect.collidepoint(mouse_pos):
-            return last_cards[i]  # return the card clicked
+            return last_cards[i], i  # return the card clicked
     return None
 
 
@@ -122,7 +122,7 @@ while running:
         pygame.draw.rect(screen, (200, 200, 200), enemy_card_slot_rect, border_radius=5)
 
         # Decide border color
-        if i < len(last_cards) and last_cards[i] == player.selected_card:
+        if i < len(last_cards) and last_cards[i] == player.selected_card and i == player.selected_card_position:
             border_color = (255, 215, 0)  # highlight
         else:
             border_color = (0, 0, 0)
@@ -202,9 +202,10 @@ while running:
 
                 else:
                     # Check if a card box was clicked
-                    selected = select_card(event.pos, player.drawn_cards[-5:], start_x, y_pos)
+                    selected, index = select_card(event.pos, player.drawn_cards[-5:], start_x, y_pos)
                     if selected and selected in player.drawn_cards:
                         player.selected_card = selected
+                        player.selected_card_position = index
 
             elif player.mana < 0:
                 player_turn = not player_turn
