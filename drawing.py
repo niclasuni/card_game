@@ -91,13 +91,15 @@ class UI:
 
         start_color = self.BUTTON_HOVER_COLOR if self.button_hover(150, 200, 200, 50) else self.BUTTON_COLOR
         deck_color = self.BUTTON_HOVER_COLOR if self.button_hover(150, 300, 200, 50) else self.BUTTON_COLOR
-        options_color = self.BUTTON_HOVER_COLOR if self.button_hover(150, 400, 200, 50) else self.BUTTON_COLOR
-        quit_color = self.BUTTON_HOVER_COLOR if self.button_hover(150, 500, 200, 50) else self.BUTTON_COLOR
+        loader_color = self.BUTTON_HOVER_COLOR if self.button_hover(150, 400, 200, 50) else self.BUTTON_COLOR
+        options_color = self.BUTTON_HOVER_COLOR if self.button_hover(150, 500, 200, 50) else self.BUTTON_COLOR
+        quit_color = self.BUTTON_HOVER_COLOR if self.button_hover(150, 600, 200, 50) else self.BUTTON_COLOR
 
         self.draw_button("Start Game", 150, 200, 200, 50, start_color)
-        self.draw_button("Load Deck", 150, 300, 200, 50, deck_color)
-        self.draw_button("Options", 150, 400, 200, 50, options_color)
-        self.draw_button("Quit", 150, 500, 200, 50, quit_color)
+        self.draw_button("Deckbuilder", 150, 300, 200, 50, deck_color)
+        self.draw_button("Load Deck", 150, 400, 200, 50, loader_color)
+        self.draw_button("Options", 150, 500, 200, 50, options_color)
+        self.draw_button("Quit", 150, 600, 200, 50, quit_color)
 
     def draw_deck_builder(self, player):
         CARD_WIDTH = 50

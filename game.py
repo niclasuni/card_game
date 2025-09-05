@@ -65,10 +65,15 @@ while main_menu:
                 print("Deckbuilder clicked")
                 show_deck_builder = not show_deck_builder
                 player.deckbuilder_selected_card_key = None
-            elif ui.button_hover(150, 400, 200, 50):  # Options
+            elif ui.button_hover(150, 400, 200, 50):
+                player.deck.load_deck('test_deck.txt')
+                player.drawn_cards = []
+                player.drawn_cards.extend(player.deck.draw(3))
+                print('Deck loaded')
+            elif ui.button_hover(150, 500, 200, 50):  # Options
                 print("Options clicked")
                 # You can create an options menu here
-            elif ui.button_hover(150, 500, 200, 50):  # Quit
+            elif ui.button_hover(150, 600, 200, 50):  # Quit
                 pygame.quit()
                 sys.exit()
 
