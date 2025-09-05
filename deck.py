@@ -100,26 +100,6 @@ class Deck:
                 ]
 
 
-def card_name_to_filename(card_name):
-    """Convert 'Ace of Spades' -> 'card_spades_A'"""
-    rank_map = {
-        "2": "02", "3": "03", "4": "04", "5": "05", "6": "06", "7": "07",
-        "8": "08", "9": "09", "10": "10",
-        "Jack": "J",  # ← map face cards
-        "Queen": "Q",
-        "King": "K",
-        "Ace": "A"
-    }
-    suit_map = {
-        "Hearts": "hearts",
-        "Diamonds": "diamonds",
-        "Clubs": "clubs",
-        "Spades": "spades"
-    }
-    rank, _, suit = card_name.partition(" of ")
-    return f"card_{suit_map[suit]}_{rank_map[rank]}"
-
-
 
 # Example usage:
 if __name__ == "__main__":

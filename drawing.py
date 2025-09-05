@@ -12,6 +12,25 @@ def get_asset_path(relative_path):
         base_path = os.path.abspath(".")
     return os.path.join(base_path, relative_path)
 
+def card_name_to_filename(card_name):
+    """Convert 'Ace of Spades' -> 'card_spades_A'"""
+    rank_map = {
+        "2": "02", "3": "03", "4": "04", "5": "05", "6": "06", "7": "07",
+        "8": "08", "9": "09", "10": "10",
+        "Jack": "J",  # ← map face cards
+        "Queen": "Q",
+        "King": "K",
+        "Ace": "A"
+    }
+    suit_map = {
+        "Hearts": "hearts",
+        "Diamonds": "diamonds",
+        "Clubs": "clubs",
+        "Spades": "spades"
+    }
+    rank, _, suit = card_name.partition(" of ")
+    return f"card_{suit_map[suit]}_{rank_map[rank]}"
+
 class UI:
     def __init__(self, screen, width=1280, height=720):
         self.screen = screen
@@ -41,6 +60,18 @@ class UI:
         self.ui_poison = pygame.transform.scale(self.ui_poison, (20, 20))
         self.ui_shield = pygame.transform.scale(self.ui_shield, (20, 20))
 
+        self.clock = pygame.time.Clock()
+
+    def display_fps(self):
+        # Get the current FPS
+        fps = self.clock.get_fps()
+
+        # Render the FPS as text
+        fps_text = self.font.render(f"FPS: {fps:.4f}", True, (0, 0, 0))  # White color
+
+        # Draw the FPS text in the top-right corner
+        self.screen.blit(fps_text, (self.screen.get_width() - 120, 10))
+
     def draw_button(self, text, x, y, width, height, color):
         pygame.draw.rect(self.screen, color, (x, y, width, height))
         label = self.font.render(text, True, self.BLACK)
@@ -53,22 +84,59 @@ class UI:
 
     def draw_main(self):
         self.screen.fill(self.WHITE)
+        self.display_fps()
 
-        start_color = self.BUTTON_HOVER_COLOR if self.button_hover(300, 200, 200, 50) else self.BUTTON_COLOR
-        deck_color = self.BUTTON_HOVER_COLOR if self.button_hover(300, 300, 200, 50) else self.BUTTON_COLOR
-        options_color = self.BUTTON_HOVER_COLOR if self.button_hover(300, 400, 200, 50) else self.BUTTON_COLOR
-        quit_color = self.BUTTON_HOVER_COLOR if self.button_hover(300, 500, 200, 50) else self.BUTTON_COLOR
+        start_color = self.BUTTON_HOVER_COLOR if self.button_hover(150, 200, 200, 50) else self.BUTTON_COLOR
+        deck_color = self.BUTTON_HOVER_COLOR if self.button_hover(150, 300, 200, 50) else self.BUTTON_COLOR
+        options_color = self.BUTTON_HOVER_COLOR if self.button_hover(150, 400, 200, 50) else self.BUTTON_COLOR
+        quit_color = self.BUTTON_HOVER_COLOR if self.button_hover(150, 500, 200, 50) else self.BUTTON_COLOR
 
-        self.draw_button("Start Game", 300, 200, 200, 50, start_color)
-        self.draw_button("Load Deck", 300, 300, 200, 50, deck_color)
-        self.draw_button("Options", 300, 400, 200, 50, options_color)
-        self.draw_button("Quit", 300, 500, 200, 50, quit_color)
+        self.draw_button("Start Game", 150, 200, 200, 50, start_color)
+        self.draw_button("Load Deck", 150, 300, 200, 50, deck_color)
+        self.draw_button("Options", 150, 400, 200, 50, options_color)
+        self.draw_button("Quit", 150, 500, 200, 50, quit_color)
+
+    def draw_deck_builder(self, player):
+        CARD_WIDTH = 50
+        CARD_HEIGHT = 70
+        CARD_MARGIN = 10
+
+        # Loop over the card slots and display images
+        for i, image in enumerate(player.deck.cards):
+            # Calculate the grid position
+            row = i // 13  # 4 rows, each with 13 cards
+            col = i % 13  # 13 columns
+            x_pos = col * (CARD_WIDTH + CARD_MARGIN) + CARD_MARGIN + 400
+            y_pos = row * (CARD_HEIGHT + CARD_MARGIN) + CARD_MARGIN
+
+            card_key = card_name_to_filename(image)
+            card_img = player.deck.images.get(card_key)
+            self.screen.blit(card_img, (x_pos, y_pos))
+
+            if pygame.mouse.get_pressed()[0]:  # Left mouse click
+                mouse_pos = pygame.mouse.get_pos()
+                card_rect = pygame.Rect(x_pos, y_pos, CARD_WIDTH, CARD_HEIGHT)
+
+                if card_rect.collidepoint(mouse_pos):
+                    player.deckbuilder_selected_card_image = card_img
+
+        if player.deckbuilder_selected_card_image:
+            self.card_modifier(player)
+
+    def card_modifier(self, player):
+
+        enlarged_x_pos = self.screen.get_width() // 2 - 150 // 2  # Center horizontally
+        enlarged_y_pos = self.screen.get_height() - 150 - 20  # Position a little above the bottom
+
+        self.screen.blit(pygame.transform.scale(player.deckbuilder_selected_card_image, (150, 150)), (enlarged_x_pos, enlarged_y_pos))
 
     def draw_game(self, player, enemy):
         screen = self.screen
         font = self.font
         WIDTH = self.WIDTH
         HEIGHT = self.HEIGHT
+
+        self.display_fps()
 
         # --- Mana ---
         circle_radius = 10

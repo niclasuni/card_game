@@ -2,9 +2,8 @@ import pygame
 import random
 import sys
 
-from drawing import UI, draw_arrow
+from drawing import UI, draw_arrow, card_name_to_filename
 from character import Character
-from deck import card_name_to_filename
 
 
 def select_card(mouse_pos, last_cards, start_x, y_pos, box_width=100, box_height=145, spacing=10):
@@ -37,39 +36,46 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Card Draw Game")
 
 font = pygame.font.SysFont(None, 32)
-clock = pygame.time.Clock()
 
 ui = UI(screen)
+player = Character()
+enemy = Character()
 
 ### MAIN MENU
-running = True
-while running:
+main_menu = True
+show_deck_builder = False
+while main_menu:
     ui.draw_main()
+
+    if show_deck_builder:
+        ui.draw_deck_builder(player)
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            running = False
+            pygame.quit()
+            sys.exit()
 
         # Mouse click events
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-            if ui.button_hover(300, 200, 200, 50):  # Start Game
+            if ui.button_hover(150, 200, 200, 50):  # Start Game
                 print("Start Game clicked")
-                running = False
+                main_menu = False
                 # Call the function to start the game (you can transition here)
-            elif ui.button_hover(300, 300, 200, 50):  # Deck
+            elif ui.button_hover(150, 300, 200, 50):  # Deck
                 print("Deckbuilder clicked")
-            elif ui.button_hover(300, 400, 200, 50):  # Options
+                show_deck_builder = not show_deck_builder
+                player.deckbuilder_selected_card_image = None
+            elif ui.button_hover(150, 400, 200, 50):  # Options
                 print("Options clicked")
                 # You can create an options menu here
-            elif ui.button_hover(300, 500, 200, 50):  # Quit
+            elif ui.button_hover(150, 500, 200, 50):  # Quit
                 pygame.quit()
                 sys.exit()
 
     pygame.display.flip()
+    ui.clock.tick(60)
 
 ### MAIN GAME
-player = Character()
-enemy = Character()
 player.deck.load_deck('test_deck.txt')
 enemy.mana = 0
 
@@ -260,7 +266,7 @@ while running:
     if enemy.life <= 0:
         break
     pygame.display.flip()
-    clock.tick(30)
+    ui.clock.tick(60)
 
 while True:
     ui.draw_win_screen()
