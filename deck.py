@@ -64,12 +64,21 @@ class Deck:
         card_name = f"{card_key.split('_')[2]} of {card_key.split('_')[1].capitalize()}"
         if card_name[0] == '0':
             card_name = card_name[1:]
+        elif card_name[0] != '1':
+            face_cards = {"A": "Ace", "J": "Jack", "Q": "Queen", "K": "King"}
+            rank, suit = card_name.split(" of ")
+            if rank in face_cards:
+                rank = face_cards[rank]
+            card_name = f"{rank} of {suit}"
+
         if card_name not in self.cards:
+            print(self.cards)
             print(f"Card '{card_name}' not found in the deck.")
             return
 
         index = self.cards.index(card_name)
         self.cards[index] = random.choice(self.cards)
+        return self.cards[index]
         #
         # # Update the image for the new card
         # new_image_key = new_card.replace(" ", "_").lower()

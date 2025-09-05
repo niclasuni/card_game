@@ -155,7 +155,9 @@ class UI:
                 # SWAP
                 if self.button_hover(enlarged_x_pos + 200, enlarged_y_pos + 50, 200, 50):
                     print('SWAP')
-                    player.deck.swap_card(player.deckbuilder_selected_card_key)
+                    swapped_in = player.deck.swap_card(player.deckbuilder_selected_card_key)
+                    print(swapped_in)
+                    player.deckbuilder_selected_card_key = card_name_to_filename(swapped_in)
                 # REVERSE
                 if self.button_hover(enlarged_x_pos + 200, enlarged_y_pos + 100, 200, 50):
                     # card_key = card_name_to_filename(player.deckbuilder_selected_card_image)
@@ -165,7 +167,6 @@ class UI:
                 # SAVE
                 if self.button_hover(enlarged_x_pos + 200, enlarged_y_pos + 150, 200, 50):
                     player.deckbuilder_selected_card_key = None
-                    self.new_card_deck = None
 
                 # ARROW LEFT
                 if self.button_hover(1039, 535, 50, 50):
