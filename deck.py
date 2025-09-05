@@ -59,6 +59,29 @@ class Deck:
             self.cards = [line.strip() for line in file]
         self.shuffle()
 
+    def swap_card(self, card_key):
+
+        card_name = f"{card_key.split('_')[2]} of {card_key.split('_')[1].capitalize()}"
+        if card_name[0] == '0':
+            card_name = card_name[1:]
+        if card_name not in self.cards:
+            print(f"Card '{card_name}' not found in the deck.")
+            return
+
+        index = self.cards.index(card_name)
+        self.cards[index] = random.choice(self.cards)
+        #
+        # # Update the image for the new card
+        # new_image_key = new_card.replace(" ", "_").lower()
+        #
+        # if card_key in self.asset_names:
+        #     asset_path = get_asset_path(os.path.join("card_images/PNG/Cards (medium)", card_key + ".png"))
+        #     img = pygame.image.load(asset_path).convert_alpha()
+        #     img = pygame.transform.scale(img, (100, 145))
+        #     self.images[card_key] = img
+        # else:
+        #     print(f"Image for {new_card} not found.")
+
     def load_asset_names(self):
         return [# 'card_back.png',
                 'card_clubs_02.png', 'card_clubs_03.png', 'card_clubs_04.png',

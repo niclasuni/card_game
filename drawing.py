@@ -52,6 +52,9 @@ class UI:
         self.button_color = (70, 130, 180)
         self.button_hover_color = (100, 160, 210)
 
+        self.new_card_deck = None
+        self.new_card_index = 0
+
         # Load and scale icons
         path = get_asset_path('board_game_icons/PNG/Default (64px)/skull.png')
         self.ui_poison = pygame.image.load(path)
@@ -122,8 +125,12 @@ class UI:
 
         if player.deckbuilder_selected_card_key:
             self.card_modifier(player)
+            self.draw_swap_menu(player)
 
     def card_modifier(self, player):
+
+        if self.new_card_deck is None:
+            self.new_card_deck = player.deck.create_new_deck()
 
         enlarged_x_pos = self.screen.get_width() // 2 - 150 // 2  # Center horizontally
         enlarged_y_pos = self.screen.get_height() - 250  # Position a little above the bottom
@@ -148,6 +155,7 @@ class UI:
                 # SWAP
                 if self.button_hover(enlarged_x_pos + 200, enlarged_y_pos + 50, 200, 50):
                     print('SWAP')
+                    player.deck.swap_card(player.deckbuilder_selected_card_key)
                 # REVERSE
                 if self.button_hover(enlarged_x_pos + 200, enlarged_y_pos + 100, 200, 50):
                     # card_key = card_name_to_filename(player.deckbuilder_selected_card_image)
@@ -157,7 +165,34 @@ class UI:
                 # SAVE
                 if self.button_hover(enlarged_x_pos + 200, enlarged_y_pos + 150, 200, 50):
                     player.deckbuilder_selected_card_key = None
+                    self.new_card_deck = None
 
+                # ARROW LEFT
+                if self.button_hover(1039, 535, 50, 50):
+                    self.new_card_index -= 1
+                    if self.new_card_index < 0:
+                        self.new_card_index = len(player.deck.cards) - self.new_card_index
+                if self.button_hover(1165, 535, 50, 50):
+                    self.new_card_index += 1
+                    if self.new_card_index > len(player.deck.cards) - 1:
+                        self.new_card_index = 0
+
+
+    def draw_swap_menu(self, player):
+        enlarged_x_pos = self.screen.get_width() // 2 + 450 // 2  # Center horizontally
+        enlarged_y_pos = self.screen.get_height() - 250  # Position a little above the bottom
+        swap_card = self.new_card_deck[self.new_card_index]
+        card_key = card_name_to_filename(swap_card)
+        card_img = player.deck.images.get(card_key)
+        self.screen.blit(pygame.transform.scale(card_img, (150, 150)), (enlarged_x_pos + 174, enlarged_y_pos))
+
+        # Arrows
+        center_back = pygame.Vector2(enlarged_x_pos + 199, enlarged_y_pos + 65)
+        end_back = pygame.Vector2(enlarged_x_pos + 174, enlarged_y_pos + 65)
+        center_forward = pygame.Vector2(enlarged_x_pos + 300, enlarged_y_pos + 65)
+        end_forward = pygame.Vector2(enlarged_x_pos + 325, enlarged_y_pos + 65)
+        draw_arrow(self.screen, center_back, end_back, pygame.Color(0, 0, 0), 10, 20, 12)
+        draw_arrow(self.screen, center_forward, end_forward, pygame.Color(0, 0, 0), 10, 20, 12)
 
     def draw_game(self, player, enemy):
         screen = self.screen
