@@ -59,7 +59,7 @@ class Deck:
             self.cards = [line.strip() for line in file]
         self.shuffle()
 
-    def swap_card(self, card_key, card_index):
+    def swap_card(self, card_key, card_index, new_card):
 
         card_name = f"{card_key.split('_')[2]} of {card_key.split('_')[1].capitalize()}"
         if card_name[0] == '0':
@@ -77,9 +77,9 @@ class Deck:
             return
 
         # index = self.cards.index(card_name)
-        print(len(self.cards), card_index)
+        print(len(self.cards), card_index, new_card)
         # self.cards[card_index] = random.choice(self.cards)
-        self.cards[card_index] = 'Ace of Hearts'
+        self.cards[card_index] = new_card
         return self.cards[card_index]
         #
         # # Update the image for the new card
