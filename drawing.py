@@ -54,6 +54,7 @@ class UI:
 
         self.new_card_deck = None
         self.new_card_index = 0
+        self.deckbuilder_index = None
 
         # Load and scale icons
         path = get_asset_path('board_game_icons/PNG/Default (64px)/skull.png')
@@ -117,6 +118,10 @@ class UI:
             card_key = card_name_to_filename(image)
             card_img = player.deck.images.get(card_key)
             self.screen.blit(card_img, (x_pos, y_pos))
+            if self.deckbuilder_index == i:
+                card_rect = card_img.get_rect(topleft=(x_pos+1, y_pos+3))
+                card_rect = card_rect.inflate(-27, -4)
+                pygame.draw.rect(self.screen, (255, 215, 0), card_rect, 5)
 
             if pygame.mouse.get_pressed()[0]:  # Left mouse click
                 mouse_pos = pygame.mouse.get_pos()
@@ -124,6 +129,7 @@ class UI:
 
                 if card_rect.collidepoint(mouse_pos):
                     player.deckbuilder_selected_card_key = card_key
+                    self.deckbuilder_index = row * 13 + col
 
         if player.deckbuilder_selected_card_key:
             self.card_modifier(player)
@@ -157,7 +163,7 @@ class UI:
                 # SWAP
                 if self.button_hover(enlarged_x_pos + 200, enlarged_y_pos + 50, 200, 50):
                     print('SWAP')
-                    swapped_in = player.deck.swap_card(player.deckbuilder_selected_card_key)
+                    swapped_in = player.deck.swap_card(player.deckbuilder_selected_card_key, self.deckbuilder_index)
                     print(swapped_in)
                     player.deckbuilder_selected_card_key = card_name_to_filename(swapped_in)
                 # REVERSE
