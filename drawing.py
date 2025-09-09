@@ -281,8 +281,8 @@ class UI:
         text_rect = value_text.get_rect(center=(x, y))
         self.screen.blit(value_text, text_rect)
 
-    def draw_win_screen(self):
-        win_text = self.font.render("YOU WIN!", True, self.WHITE)
+    def draw_end_screen(self, player_won):
+        win_text = self.font.render(f"YOU {'WIN' if player_won else 'LOSE'}!", True, self.WHITE)
         sub_text = self.font.render("Press any key to exit...", True, self.WHITE)
         self.screen.fill(self.BLACK)
         self.screen.blit(win_text, (self.WIDTH // 2 - win_text.get_width() // 2, self.HEIGHT // 3))
