@@ -35,7 +35,7 @@ class Character:
         if suit == 'Clubs':
             enemy.poison += value
         elif suit == 'Spades':
-            enemy.life -= value - enemy.shield if value > enemy.shield else 0
+            enemy.life = enemy.life - max(0, value - enemy.shield)
         elif suit == 'Diamonds':
             self.shield += value
         elif suit == 'Hearts':
@@ -43,8 +43,8 @@ class Character:
 
         enemy.life -= enemy.poison
 
-        enemy.shield -= 2 if enemy.shield > 0 else 0
-        self.poison -= 2 if self.poison > 0 else 0
+        enemy.shield = max(0, enemy.shield - 2)
+        self.poison = max(0, self.poison - 2)
 
         if self.mana < 0:
             enemy.mana = abs(self.mana)

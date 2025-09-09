@@ -215,6 +215,7 @@ while running:
                 if enemy_turn_step:
                     enemy_card = enemy_card[0]
                     enemy.enemy_card_start_time = pygame.time.get_ticks()
+                    enemy.mana = abs(player.mana)
 
     # Enemy turn
     else:
