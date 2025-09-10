@@ -278,13 +278,13 @@ while running:
             player_turn = not player_turn
             enemy.end_turn(player)
 
-    if enemy.life <= 0:
+    if enemy.life <= 0 or player.life <= 0:
         break
     pygame.display.flip()
     ui.clock.tick(60)
 
 while True:
-    ui.draw_win_screen()
+    ui.draw_end_screen(enemy.life < player.life)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
